@@ -1123,4 +1123,89 @@
       const d = document.getElementById('vp-stat-days');
       if (d) d.textContent = '21';
       toast('+4 controls. Now 53% ready.');
-      if (demoMode) currentStep 
+      if (demoMode) currentStep = 3;
+      updateDemoStatus();
+    }, 1200);
+  };
+
+  let generated = false;
+  window.vpGenerate = function() {
+    if (generated) return;
+    generated = true;
+    const overlay = document.getElementById('vp-pdf-overlay');
+    const msg = document.getElementById('vp-pdf-msg');
+    const btn = document.getElementById('vp-gen-btn');
+    const status = document.getElementById('vp-audit-status');
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+    overlay.classList.add('active');
+    const stages = [
+      'Compiling 32 pieces of evidence…',
+      'Cross-referencing SS 712 clauses…',
+      'Generating PDF and indexed ZIP…',
+      'Almost done…'
+    ];
+    stages.forEach((s, i) => setTimeout(() => { msg.textContent = s; }, 700 * (i + 1)));
+    setTimeout(() => {
+      overlay.classList.remove('active');
+      btn.textContent = 'Download pack';
+      btn.disabled = false;
+      status.textContent = 'Pack generated. Share-link sent to your auditor inbox.';
+      toast('Audit pack ready. Send it to your certifying body.', 3000);
+      if (demoMode) currentStep = 4;
+      updateDemoStatus();
+    }, 3200);
+  };
+
+  window.vpRestart = function() {
+    connected = false;
+    templateUsed = false;
+    generated = false;
+    currentStep = 0;
+    demoMode = true;
+    const intEl = document.getElementById('vp-int-ms');
+    intEl.classList.remove('connected', 'connecting');
+    document.getElementById('vp-ms-status').textContent = 'Not connected · Auto-verifies up to 14 controls';
+    const cb = document.getElementById('vp-connect-ms');
+    cb.textContent = 'Connect';
+    cb.disabled = false;
+    cb.classList.add('vp-btn-primary');
+    document.getElementById('vp-stat-overall').textContent = '0%';
+    document.getElementById('vp-stat-auto').textContent = '0';
+    document.getElementById('vp-stat-manual').textContent = '0';
+    document.getElementById('vp-stat-days').textContent = '—';
+    ['vp-stat-overall-delta', 'vp-stat-auto-delta', 'vp-stat-manual-delta', 'vp-stat-days-delta'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.classList.remove('show');
+    });
+    ['vp-dom-people', 'vp-dom-hw', 'vp-dom-acc', 'vp-dom-upd', 'vp-dom-mal', 'vp-dom-bk'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.width = '0%';
+    });
+    [['vp-dom-people-meta', '0 of 6 done'], ['vp-dom-hw-meta', '0 of 8 done'], ['vp-dom-acc-meta', '0 of 9 done'],
+     ['vp-dom-upd-meta', '0 of 7 done'], ['vp-dom-mal-meta', '0 of 6 done'], ['vp-dom-bk-meta', '0 of 11 done']].forEach(([id, t]) => {
+      const el = document.getElementById(id); if (el) el.textContent = t;
+    });
+    const card = document.getElementById('vp-ctrl-ir');
+    if (card) card.classList.remove('flash');
+    const pill = document.getElementById('vp-ctrl-ir-pill');
+    if (pill) { pill.textContent = 'To do'; pill.classList.remove('vp-pill-done'); pill.classList.add('vp-pill-todo'); }
+    const irBtn = document.getElementById('vp-ctrl-ir-btn');
+    if (irBtn) { irBtn.textContent = 'Use template'; irBtn.disabled = false; }
+    const help = document.getElementById('vp-ctrl-ir-help');
+    if (help) help.textContent = 'Use our 5-min template or upload your own.';
+    const genBtn = document.getElementById('vp-gen-btn');
+    if (genBtn) { genBtn.textContent = 'Generate audit pack'; genBtn.disabled = false; }
+    const status = document.getElementById('vp-audit-status');
+    if (status) status.textContent = '15 of 47 controls still need evidence before this pack is complete.';
+    showTab('onboarding');
+    updateDemoStatus();
+  };
+
+  const dateEl = document.getElementById('vp-pdf-date');
+  if (dateEl) {
+    const d = new Date();
+    dateEl.textContent = d.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+})();
+</script>
+</body>
+</html>
