@@ -1,332 +1,766 @@
 <style>
-  .ce-app { font-family: var(--font-sans); padding: 1rem 0; }
-  .ce-frame { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 0; overflow: hidden; border: 0.5px solid var(--color-border-tertiary); }
-  .ce-topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .ce-brand { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 14px; }
-  .ce-logo { width: 24px; height: 24px; border-radius: 6px; background: var(--color-text-primary); color: var(--color-background-primary); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; }
-  .ce-org { font-size: 12px; color: var(--color-text-secondary); padding: 4px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: 999px; }
-  .ce-tabs { display: flex; gap: 0; padding: 0 20px; background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); overflow-x: auto; }
-  .ce-tab { padding: 12px 14px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; background: none; border-left: none; border-right: none; border-top: none; font-family: inherit; }
-  .ce-tab:hover { color: var(--color-text-primary); }
-  .ce-tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
-  .ce-panel { padding: 24px; background: var(--color-background-primary); min-height: 480px; }
-  .ce-h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; }
-  .ce-sub { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 24px; }
-  .ce-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .ce-stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
-  .ce-stat-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .ce-stat-num { font-size: 22px; font-weight: 500; }
-  .ce-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 16px 20px; margin-bottom: 12px; }
-  .ce-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .ce-pill { font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 500; white-space: nowrap; }
-  .ce-pill-done { background: #EAF3DE; color: #27500A; }
-  .ce-pill-auto { background: #E6F1FB; color: #0C447C; }
-  .ce-pill-todo { background: #FAEEDA; color: #633806; }
-  .ce-pill-fail { background: #FCEBEB; color: #791F1F; }
-  .ce-pill-progress { background: var(--color-background-secondary); color: var(--color-text-secondary); }
-  .ce-progress-track { height: 6px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; margin: 8px 0; }
-  .ce-progress-fill { height: 100%; background: var(--color-text-primary); transition: width 0.3s; }
-  .ce-btn { padding: 8px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; font-size: 13px; cursor: pointer; font-family: inherit; color: var(--color-text-primary); }
-  .ce-btn:hover { background: var(--color-background-secondary); }
-  .ce-btn-primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
-  .ce-btn-primary:hover { opacity: 0.9; background: var(--color-text-primary); }
-  .ce-control-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
-  .ce-control-meta { font-size: 12px; color: var(--color-text-secondary); }
-  .ce-form-row { margin-bottom: 16px; }
-  .ce-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
-  .ce-help { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
-  .ce-choice { padding: 12px 14px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); margin-bottom: 8px; cursor: pointer; font-size: 13px; }
-  .ce-choice:hover { border-color: var(--color-border-secondary); background: var(--color-background-secondary); }
-  .ce-choice.selected { border: 1.5px solid var(--color-text-primary); }
-  .ce-section-head { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin: 20px 0 8px; text-transform: none; }
-  .ce-divider { height: 0.5px; background: var(--color-border-tertiary); margin: 16px 0; }
-  .ce-integration { display: flex; align-items: center; gap: 12px; padding: 14px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); margin-bottom: 8px; }
-  .ce-int-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; }
-  .ce-int-icon.ms { background: #E6F1FB; color: #0C447C; }
-  .ce-int-icon.gw { background: #FCEBEB; color: #791F1F; }
-  .ce-int-icon.aws { background: #FAEEDA; color: #633806; }
-  .ce-int-info { flex: 1; }
-  .ce-int-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-  .ce-int-status { font-size: 12px; color: var(--color-text-secondary); }
-  .ce-evidence-list { display: grid; grid-template-columns: 1fr; gap: 8px; }
-  .ce-evidence-item { display: flex; align-items: center; gap: 10px; font-size: 12px; padding: 8px 10px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); }
-  .ce-evidence-icon { width: 22px; height: 22px; border-radius: 4px; background: var(--color-background-primary); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
-  .ce-domain-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-  .ce-pdf-preview { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 24px; margin-bottom: 16px; border: 0.5px solid var(--color-border-tertiary); }
-  .ce-pdf-page { background: white; padding: 28px 32px; border-radius: 4px; max-width: 480px; margin: 0 auto; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08); }
-  .ce-pdf-h { font-size: 16px; font-weight: 500; color: #1F4E79; margin: 0 0 4px; }
-  .ce-pdf-sub { font-size: 11px; color: #595959; margin-bottom: 16px; }
-  .ce-pdf-section { font-size: 12px; font-weight: 500; color: #1F4E79; margin: 12px 0 6px; border-bottom: 0.5px solid #DDD; padding-bottom: 4px; }
-  .ce-pdf-row { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; color: #333; }
-  .ce-pdf-tag { font-size: 9px; padding: 1px 6px; background: #EAF3DE; color: #27500A; border-radius: 3px; }
-  .ce-cta-banner { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 16px 20px; margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .ce-cta-text { font-size: 13px; }
-  .ce-cta-text strong { font-weight: 500; }
-  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .vp { font-family: var(--font-sans); padding: 1rem 0; }
+  .vp-shell { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 0; overflow: hidden; border: 0.5px solid var(--color-border-tertiary); }
+
+  /* HERO INTRO SCREEN */
+  .vp-hero { padding: 48px 32px; text-align: center; background: var(--color-background-primary); }
+  .vp-logo-wrap { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 32px; padding: 6px 14px 6px 8px; border: 0.5px solid var(--color-border-tertiary); border-radius: 999px; background: var(--color-background-secondary); }
+  .vp-logo { width: 24px; height: 24px; border-radius: 6px; background: #1F4E79; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+  .vp-brand { font-size: 13px; font-weight: 500; }
+  .vp-hero-h { font-size: 28px; font-weight: 500; margin: 0 0 12px; line-height: 1.3; max-width: 520px; margin-left: auto; margin-right: auto; }
+  .vp-hero-sub { font-size: 15px; color: var(--color-text-secondary); margin: 0 auto 32px; max-width: 480px; line-height: 1.6; }
+  .vp-hero-stats { display: flex; gap: 32px; justify-content: center; margin: 32px 0 32px; flex-wrap: wrap; }
+  .vp-hs { text-align: center; }
+  .vp-hs-num { font-size: 22px; font-weight: 500; color: #1F4E79; }
+  .vp-hs-lbl { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .vp-cta { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: #1F4E79; color: white; border: none; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+  .vp-cta:hover { background: #2E75B6; }
+  .vp-cta-arrow { transition: transform 0.2s; }
+  .vp-cta:hover .vp-cta-arrow { transform: translateX(2px); }
+  .vp-hero-foot { font-size: 12px; color: var(--color-text-tertiary); margin-top: 14px; }
+
+  /* APP CHROME */
+  .vp-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .vp-bm { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 13px; }
+  .vp-org { font-size: 12px; color: var(--color-text-secondary); padding: 4px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: 999px; }
+  .vp-step-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: #FAEEDA; color: #633806; border-radius: 999px; font-size: 11px; font-weight: 500; }
+  .vp-step-dot { width: 6px; height: 6px; background: #BA7517; border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .vp-tabs { display: flex; gap: 0; padding: 0 20px; background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); overflow-x: auto; }
+  .vp-tab { padding: 12px 14px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; background: none; border-left: none; border-right: none; border-top: none; font-family: inherit; }
+  .vp-tab:hover { color: var(--color-text-primary); }
+  .vp-tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+
+  .vp-panel { padding: 24px; background: var(--color-background-primary); min-height: 540px; }
+
+  .vp-h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; }
+  .vp-sub { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 24px; line-height: 1.6; }
+
+  /* STORY BANNER */
+  .vp-story { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .vp-story-icon { width: 28px; height: 28px; border-radius: 50%; background: #1F4E79; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+  .vp-story-text { font-size: 13px; line-height: 1.5; }
+  .vp-story-text strong { font-weight: 500; }
+
+  /* STAT GRID */
+  .vp-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .vp-stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; transition: background 0.4s; }
+  .vp-stat-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .vp-stat-num { font-size: 22px; font-weight: 500; transition: color 0.4s; }
+  .vp-stat-delta { font-size: 11px; color: #27500A; margin-top: 2px; opacity: 0; transition: opacity 0.4s; }
+  .vp-stat-delta.show { opacity: 1; }
+
+  /* CARDS */
+  .vp-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 18px; margin-bottom: 10px; transition: all 0.3s; }
+  .vp-card.flash { border-color: #97C459; background: #F4FBE9; }
+  .vp-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .vp-row-text { flex: 1; min-width: 0; }
+  .vp-control-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+  .vp-control-meta { font-size: 12px; color: var(--color-text-secondary); }
+
+  /* PILLS */
+  .vp-pill { font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 500; white-space: nowrap; }
+  .vp-pill-done { background: #EAF3DE; color: #27500A; }
+  .vp-pill-auto { background: #E6F1FB; color: #0C447C; }
+  .vp-pill-todo { background: #FAEEDA; color: #633806; }
+  .vp-pill-fail { background: #FCEBEB; color: #791F1F; }
+  .vp-pill-pulse { background: #FAEEDA; color: #633806; animation: pulse 1.5s infinite; }
+
+  /* PROGRESS */
+  .vp-progress-track { height: 6px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; margin: 8px 0; }
+  .vp-progress-fill { height: 100%; background: #27500A; transition: width 1.2s ease-out; }
+
+  /* BUTTONS */
+  .vp-btn { padding: 8px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; font-size: 13px; cursor: pointer; font-family: inherit; color: var(--color-text-primary); transition: all 0.15s; }
+  .vp-btn:hover:not(:disabled) { background: var(--color-background-secondary); }
+  .vp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .vp-btn-primary { background: #1F4E79; color: white; border-color: #1F4E79; }
+  .vp-btn-primary:hover:not(:disabled) { background: #2E75B6; border-color: #2E75B6; }
+
+  /* INTEGRATIONS */
+  .vp-int { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); margin-bottom: 8px; transition: all 0.3s; }
+  .vp-int.connected { border-color: #97C459; background: #F4FBE9; }
+  .vp-int.connecting { border-color: #BA7517; background: #FFF8EC; }
+  .vp-int-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+  .vp-int-icon.ms { background: #E6F1FB; color: #0C447C; }
+  .vp-int-icon.gw { background: #FCEBEB; color: #791F1F; }
+  .vp-int-icon.aws { background: #FAEEDA; color: #633806; }
+  .vp-int-info { flex: 1; min-width: 0; }
+  .vp-int-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .vp-int-status { font-size: 12px; color: var(--color-text-secondary); }
+
+  /* DEMO CONTROLS BAR (sticky bottom) */
+  .vp-demo-bar { padding: 12px 20px; background: var(--color-background-secondary); border-top: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .vp-demo-status { font-size: 12px; color: var(--color-text-secondary); }
+  .vp-demo-actions { display: flex; gap: 8px; }
+  .vp-demo-btn { padding: 6px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; font-size: 12px; cursor: pointer; font-family: inherit; color: var(--color-text-primary); }
+  .vp-demo-btn:hover { background: var(--color-background-primary); }
+
+  /* AUDIT PACK */
+  .vp-pdf-preview { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 24px; margin-bottom: 16px; border: 0.5px solid var(--color-border-tertiary); position: relative; overflow: hidden; }
+  .vp-pdf-page { background: white; padding: 28px 32px; border-radius: 4px; max-width: 480px; margin: 0 auto; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08); }
+  .vp-pdf-h { font-size: 16px; font-weight: 500; color: #1F4E79; margin: 0 0 4px; }
+  .vp-pdf-sub { font-size: 11px; color: #595959; margin-bottom: 16px; }
+  .vp-pdf-section { font-size: 12px; font-weight: 500; color: #1F4E79; margin: 12px 0 6px; border-bottom: 0.5px solid #DDD; padding-bottom: 4px; }
+  .vp-pdf-row { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; color: #333; }
+  .vp-pdf-tag { font-size: 9px; padding: 1px 6px; background: #EAF3DE; color: #27500A; border-radius: 3px; }
+  .vp-pdf-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.85); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
+  .vp-pdf-overlay.active { display: flex; }
+  .vp-spinner { width: 32px; height: 32px; border: 2px solid var(--color-border-tertiary); border-top-color: #1F4E79; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TOOLTIP / WHY */
+  .vp-why { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--color-text-tertiary); margin-left: 8px; cursor: help; }
+  .vp-why-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--color-background-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 9px; color: var(--color-text-secondary); }
+
+  /* ONBOARDING */
+  .vp-form { max-width: 520px; }
+  .vp-form-row { margin-bottom: 18px; }
+  .vp-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .vp-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+  .vp-choice { padding: 12px 14px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); cursor: pointer; font-size: 13px; text-align: center; transition: all 0.15s; background: var(--color-background-primary); color: var(--color-text-primary); font-family: inherit; }
+  .vp-choice:hover { border-color: var(--color-border-secondary); }
+  .vp-choice.selected { border: 1.5px solid #1F4E79; background: #E6F1FB; color: #0C447C; font-weight: 500; }
+
+  .vp-section-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); margin: 18px 0 10px; }
+  .vp-divider { height: 0.5px; background: var(--color-border-tertiary); margin: 14px 0; }
+
+  .vp-cta-banner { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 14px 18px; margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .vp-cta-text { font-size: 13px; flex: 1; min-width: 200px; }
+  .vp-cta-text strong { font-weight: 500; }
+
+  /* TOAST */
+  .vp-toast { position: absolute; bottom: 20px; right: 20px; padding: 12px 16px; background: #1F4E79; color: white; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; }
+  .vp-toast.show { transform: translateY(0); opacity: 1; }
+
+  .vp-frame-wrap { position: relative; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 </style>
 
-<h2 class="sr-only">Interactive prototype of a Cyber Essentials Readiness SaaS for Singapore SMEs, with five demo screens: dashboard, controls, integrations, audit pack, and onboarding wizard.</h2>
+<h2 class="sr-only">Interactive demo of CyberReady, a Cyber Essentials certification readiness platform for Singapore SMEs. Click "Start guided demo" to see the full story arc, or explore tabs freely.</h2>
 
-<div class="ce-app">
-  <div class="ce-frame">
-    <div class="ce-topbar">
-      <div class="ce-brand">
-        <div class="ce-logo">CE</div>
-        <span>Readiness</span>
+<div class="vp">
+  <div class="vp-shell">
+
+    <!-- HERO -->
+    <div id="vp-hero" class="vp-hero">
+      <div class="vp-logo-wrap">
+        <div class="vp-logo">CR</div>
+        <div class="vp-brand">CyberReady</div>
       </div>
-      <div class="ce-org">Acme Logistics Pte Ltd · Growth plan</div>
-    </div>
-    <div class="ce-tabs" id="ce-tabs">
-      <button class="ce-tab active" data-tab="dashboard">Dashboard</button>
-      <button class="ce-tab" data-tab="controls">Controls</button>
-      <button class="ce-tab" data-tab="integrations">Integrations</button>
-      <button class="ce-tab" data-tab="audit">Audit pack</button>
-      <button class="ce-tab" data-tab="onboarding">Onboarding</button>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div class="ce-panel" data-panel="dashboard">
-      <p class="ce-h1">Your Cyber Essentials readiness</p>
-      <p class="ce-sub">Singapore Standard SS 712 (Cyber Essentials 2025) · 32 of 47 controls complete</p>
-
-      <div class="ce-stat-grid">
-        <div class="ce-stat"><div class="ce-stat-label">Overall progress</div><div class="ce-stat-num">68%</div></div>
-        <div class="ce-stat"><div class="ce-stat-label">Auto-verified</div><div class="ce-stat-num">21</div></div>
-        <div class="ce-stat"><div class="ce-stat-label">Manual evidence</div><div class="ce-stat-num">11</div></div>
-        <div class="ce-stat"><div class="ce-stat-label">Days to target</div><div class="ce-stat-num">42</div></div>
+      <h1 class="vp-hero-h">Get your SME Cyber Essentials certified — without paying a consultant $10,000.</h1>
+      <p class="vp-hero-sub">Connect Microsoft 365 or Google Workspace. We auto-collect evidence, map it to SS 712, and generate the audit pack. You hand it to a certification body and get certified.</p>
+      <div class="vp-hero-stats">
+        <div class="vp-hs"><div class="vp-hs-num">30 days</div><div class="vp-hs-lbl">to audit-ready</div></div>
+        <div class="vp-hs"><div class="vp-hs-num">~70%</div><div class="vp-hs-lbl">evidence auto-collected</div></div>
+        <div class="vp-hs"><div class="vp-hs-num">PSG</div><div class="vp-hs-lbl">grant eligible (planned)</div></div>
       </div>
-
-      <div class="ce-section-head">Progress by domain</div>
-      <div class="ce-domain-list">
-        <div class="ce-card">
-          <div class="ce-row">
-            <div><div class="ce-control-title">Assets — people</div><div class="ce-control-meta">5 of 6 controls</div></div>
-            <span class="ce-pill ce-pill-progress">83%</span>
-          </div>
-          <div class="ce-progress-track"><div class="ce-progress-fill" style="width: 83%"></div></div>
-        </div>
-        <div class="ce-card">
-          <div class="ce-row">
-            <div><div class="ce-control-title">Assets — hardware &amp; software</div><div class="ce-control-meta">7 of 8 controls</div></div>
-            <span class="ce-pill ce-pill-progress">88%</span>
-          </div>
-          <div class="ce-progress-track"><div class="ce-progress-fill" style="width: 88%"></div></div>
-        </div>
-        <div class="ce-card">
-          <div class="ce-row">
-            <div><div class="ce-control-title">Secure / protect — access</div><div class="ce-control-meta">6 of 9 controls</div></div>
-            <span class="ce-pill ce-pill-progress">67%</span>
-          </div>
-          <div class="ce-progress-track"><div class="ce-progress-fill" style="width: 67%"></div></div>
-        </div>
-        <div class="ce-card">
-          <div class="ce-row">
-            <div><div class="ce-control-title">Secure / protect — virus &amp; malware</div><div class="ce-control-meta">4 of 6 controls</div></div>
-            <span class="ce-pill ce-pill-progress">67%</span>
-          </div>
-          <div class="ce-progress-track"><div class="ce-progress-fill" style="width: 67%"></div></div>
-        </div>
-        <div class="ce-card">
-          <div class="ce-row">
-            <div><div class="ce-control-title">Update — software updates</div><div class="ce-control-meta">5 of 7 controls</div></div>
-            <span class="ce-pill ce-pill-progress">71%</span>
-          </div>
-          <div class="ce-progress-track"><div class="ce-progress-fill" style="width: 71%"></div></div>
-        </div>
-        <div class="ce-card">
-          <div class="ce-row">
-            <div><div class="ce-control-title">Backup &amp; respond</div><div class="ce-control-meta">5 of 11 controls</div></div>
-            <span class="ce-pill ce-pill-progress">45%</span>
-          </div>
-          <div class="ce-progress-track"><div class="ce-progress-fill" style="width: 45%"></div></div>
-        </div>
-      </div>
-
-      <div class="ce-cta-banner">
-        <div class="ce-cta-text"><strong>Next best action:</strong> Upload your Incident Response policy or use our template — unlocks 4 controls.</div>
-        <button class="ce-btn ce-btn-primary" onclick="window.ceSwitch('controls')">Go to controls</button>
-      </div>
+      <button class="vp-cta" onclick="vpStartDemo()">
+        Start 60-second guided demo
+        <span class="vp-cta-arrow">→</span>
+      </button>
+      <p class="vp-hero-foot">Or explore the app freely once you're inside.</p>
     </div>
 
-    <!-- CONTROLS -->
-    <div class="ce-panel" data-panel="controls" style="display: none;">
-      <p class="ce-h1">Controls</p>
-      <p class="ce-sub">SS 712 clauses mapped to your environment. Auto-verified controls update nightly.</p>
-
-      <div class="ce-section-head">Backup &amp; respond — 5 of 11</div>
-      <div class="ce-card">
-        <div class="ce-row">
-          <div><div class="ce-control-title">Incident response plan documented</div><div class="ce-control-meta">SS 712 §6.4.1 · Manual evidence</div></div>
-          <span class="ce-pill ce-pill-todo">Action needed</span>
-        </div>
-        <div class="ce-divider"></div>
-        <div class="ce-row">
-          <div style="font-size: 12px; color: var(--color-text-secondary);">Use our SG-localised template (5-min fork) or upload your own.</div>
-          <div style="display: flex; gap: 8px;">
-            <button class="ce-btn">Upload</button>
-            <button class="ce-btn ce-btn-primary">Use template</button>
+    <!-- APP -->
+    <div id="vp-app" style="display: none;">
+      <div class="vp-frame-wrap">
+        <div class="vp-topbar">
+          <div class="vp-bm">
+            <div class="vp-logo">CR</div>
+            <span>CyberReady</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span id="vp-step-indicator" class="vp-step-pill" style="display: none;"><span class="vp-step-dot"></span><span id="vp-step-text">Step 1 of 4</span></span>
+            <div class="vp-org">Acme Logistics Pte Ltd</div>
           </div>
         </div>
-      </div>
-      <div class="ce-card">
-        <div class="ce-row">
-          <div><div class="ce-control-title">Backup frequency at least weekly</div><div class="ce-control-meta">SS 712 §6.3.2 · Auto-verified via Microsoft 365</div></div>
-          <span class="ce-pill ce-pill-done">Verified</span>
+
+        <div class="vp-tabs" id="vp-tabs">
+          <button class="vp-tab active" data-tab="onboarding">Setup</button>
+          <button class="vp-tab" data-tab="integrations">Integrations</button>
+          <button class="vp-tab" data-tab="dashboard">Dashboard</button>
+          <button class="vp-tab" data-tab="controls">Controls</button>
+          <button class="vp-tab" data-tab="audit">Audit pack</button>
         </div>
-      </div>
-      <div class="ce-card">
-        <div class="ce-row">
-          <div><div class="ce-control-title">Backup restore tested in last 12 months</div><div class="ce-control-meta">SS 712 §6.3.4 · Manual evidence</div></div>
-          <span class="ce-pill ce-pill-todo">Action needed</span>
+
+        <!-- ONBOARDING -->
+        <div class="vp-panel" data-panel="onboarding">
+          <p class="vp-h1">Quick setup</p>
+          <p class="vp-sub">A few questions so we know which controls apply to you. Takes 60 seconds. You can change these later.</p>
+
+          <div class="vp-story">
+            <div class="vp-story-icon">1</div>
+            <div class="vp-story-text"><strong>The story:</strong> Your biggest customer just emailed asking if you have Cyber Essentials. You have 6 weeks. You've never done this before.</div>
+          </div>
+
+          <div class="vp-form">
+            <div class="vp-form-row">
+              <label class="vp-label">How many employees do you have?</label>
+              <div class="vp-choices" data-group="size">
+                <button class="vp-choice" data-val="<10">Under 10</button>
+                <button class="vp-choice selected" data-val="10-50">10 to 50</button>
+                <button class="vp-choice" data-val="51-200">51 to 200</button>
+                <button class="vp-choice" data-val="200+">More than 200</button>
+              </div>
+            </div>
+
+            <div class="vp-form-row">
+              <label class="vp-label">What does your team mostly use for email and files?</label>
+              <div class="vp-choices" data-group="stack">
+                <button class="vp-choice selected" data-val="m365">Microsoft 365</button>
+                <button class="vp-choice" data-val="google">Google Workspace</button>
+                <button class="vp-choice" data-val="both">A bit of both</button>
+              </div>
+            </div>
+
+            <div class="vp-form-row">
+              <label class="vp-label">Why are you pursuing Cyber Essentials?</label>
+              <div class="vp-choices" data-group="why">
+                <button class="vp-choice selected" data-val="customer">A customer or tender requires it</button>
+                <button class="vp-choice" data-val="proactive">We want stronger security</button>
+                <button class="vp-choice" data-val="vendor">We're an SMEs Go Digital vendor</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 28px;">
+              <button class="vp-btn vp-btn-primary" onclick="vpFinishOnboarding()">Continue to integrations →</button>
+            </div>
+          </div>
         </div>
+
+        <!-- INTEGRATIONS -->
+        <div class="vp-panel" data-panel="integrations" style="display: none;">
+          <p class="vp-h1">Connect your tools</p>
+          <p class="vp-sub">We use read-only access. We never make changes — only collect evidence.</p>
+
+          <div class="vp-story">
+            <div class="vp-story-icon">2</div>
+            <div class="vp-story-text"><strong>The story:</strong> Connect Microsoft 365 and watch what happens. This is the moment most users say "oh, that's actually useful."</div>
+          </div>
+
+          <div class="vp-int" id="vp-int-ms">
+            <div class="vp-int-icon ms">M365</div>
+            <div class="vp-int-info">
+              <div class="vp-int-name">Microsoft 365</div>
+              <div class="vp-int-status" id="vp-ms-status">Not connected · Auto-verifies up to 14 controls</div>
+            </div>
+            <button class="vp-btn vp-btn-primary" id="vp-connect-ms" onclick="vpConnectMs()">Connect</button>
+          </div>
+
+          <div class="vp-int">
+            <div class="vp-int-icon gw">GW</div>
+            <div class="vp-int-info">
+              <div class="vp-int-name">Google Workspace</div>
+              <div class="vp-int-status">Not connected · Auto-verifies up to 7 controls</div>
+            </div>
+            <button class="vp-btn">Connect</button>
+          </div>
+
+          <div class="vp-int">
+            <div class="vp-int-icon aws">AWS</div>
+            <div class="vp-int-info">
+              <div class="vp-int-name">Amazon Web Services</div>
+              <div class="vp-int-status">Coming soon · Cloud security domain</div>
+            </div>
+            <button class="vp-btn" disabled>Soon</button>
+          </div>
+
+          <p class="vp-section-head">What we read from Microsoft 365</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+            <div style="font-size: 12px; padding: 8px 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary);">User accounts &amp; admin roles</div>
+            <div style="font-size: 12px; padding: 8px 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary);">MFA registration status</div>
+            <div style="font-size: 12px; padding: 8px 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary);">Conditional access policies</div>
+            <div style="font-size: 12px; padding: 8px 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary);">Password policy settings</div>
+            <div style="font-size: 12px; padding: 8px 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary);">Audit log retention</div>
+            <div style="font-size: 12px; padding: 8px 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary);">Anti-phishing &amp; malware state</div>
+          </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div class="vp-panel" data-panel="dashboard" style="display: none;">
+          <p class="vp-h1">Your readiness</p>
+          <p class="vp-sub">Cyber Essentials 2025 (Singapore Standard SS 712) — what's done and what's left.</p>
+
+          <div class="vp-story">
+            <div class="vp-story-icon">3</div>
+            <div class="vp-story-text"><strong>The story:</strong> Within minutes of connecting M365, your dashboard goes from 0% to 45%. Without lifting a finger.</div>
+          </div>
+
+          <div class="vp-stat-grid">
+            <div class="vp-stat">
+              <div class="vp-stat-label">Overall ready</div>
+              <div class="vp-stat-num" id="vp-stat-overall">0%</div>
+              <div class="vp-stat-delta" id="vp-stat-overall-delta">↑ 45% from sync</div>
+            </div>
+            <div class="vp-stat">
+              <div class="vp-stat-label">Auto-verified</div>
+              <div class="vp-stat-num" id="vp-stat-auto">0</div>
+              <div class="vp-stat-delta" id="vp-stat-auto-delta">↑ 14 just now</div>
+            </div>
+            <div class="vp-stat">
+              <div class="vp-stat-label">Manual evidence</div>
+              <div class="vp-stat-num" id="vp-stat-manual">0</div>
+              <div class="vp-stat-delta" id="vp-stat-manual-delta">7 with templates</div>
+            </div>
+            <div class="vp-stat">
+              <div class="vp-stat-label">Days to ready</div>
+              <div class="vp-stat-num" id="vp-stat-days">—</div>
+              <div class="vp-stat-delta" id="vp-stat-days-delta">est. 28 days</div>
+            </div>
+          </div>
+
+          <p class="vp-section-head">Progress by domain</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+            <div class="vp-card">
+              <div class="vp-row"><div class="vp-row-text"><div class="vp-control-title">People</div><div class="vp-control-meta" id="vp-dom-people-meta">0 of 6 done</div></div></div>
+              <div class="vp-progress-track"><div class="vp-progress-fill" id="vp-dom-people" style="width: 0%"></div></div>
+            </div>
+            <div class="vp-card">
+              <div class="vp-row"><div class="vp-row-text"><div class="vp-control-title">Hardware &amp; software</div><div class="vp-control-meta" id="vp-dom-hw-meta">0 of 8 done</div></div></div>
+              <div class="vp-progress-track"><div class="vp-progress-fill" id="vp-dom-hw" style="width: 0%"></div></div>
+            </div>
+            <div class="vp-card">
+              <div class="vp-row"><div class="vp-row-text"><div class="vp-control-title">Access control</div><div class="vp-control-meta" id="vp-dom-acc-meta">0 of 9 done</div></div></div>
+              <div class="vp-progress-track"><div class="vp-progress-fill" id="vp-dom-acc" style="width: 0%"></div></div>
+            </div>
+            <div class="vp-card">
+              <div class="vp-row"><div class="vp-row-text"><div class="vp-control-title">Updates</div><div class="vp-control-meta" id="vp-dom-upd-meta">0 of 7 done</div></div></div>
+              <div class="vp-progress-track"><div class="vp-progress-fill" id="vp-dom-upd" style="width: 0%"></div></div>
+            </div>
+            <div class="vp-card">
+              <div class="vp-row"><div class="vp-row-text"><div class="vp-control-title">Anti-malware</div><div class="vp-control-meta" id="vp-dom-mal-meta">0 of 6 done</div></div></div>
+              <div class="vp-progress-track"><div class="vp-progress-fill" id="vp-dom-mal" style="width: 0%"></div></div>
+            </div>
+            <div class="vp-card">
+              <div class="vp-row"><div class="vp-row-text"><div class="vp-control-title">Backup &amp; respond</div><div class="vp-control-meta" id="vp-dom-bk-meta">0 of 11 done</div></div></div>
+              <div class="vp-progress-track"><div class="vp-progress-fill" id="vp-dom-bk" style="width: 0%"></div></div>
+            </div>
+          </div>
+
+          <div class="vp-cta-banner">
+            <div class="vp-cta-text"><strong>Next best action:</strong> Use our Incident Response policy template to unlock 4 more controls.</div>
+            <button class="vp-btn vp-btn-primary" onclick="vpSwitchTab('controls')">Show me</button>
+          </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="vp-panel" data-panel="controls" style="display: none;">
+          <p class="vp-h1">Controls</p>
+          <p class="vp-sub">The 47 things you need to evidence for Cyber Essentials. Click any control to evidence it.</p>
+
+          <div class="vp-story">
+            <div class="vp-story-icon">4</div>
+            <div class="vp-story-text"><strong>Try it:</strong> Click "Use template" on Incident Response below. Watch your dashboard tick up.</div>
+          </div>
+
+          <p class="vp-section-head">Action needed</p>
+          <div class="vp-card" id="vp-ctrl-ir">
+            <div class="vp-row">
+              <div class="vp-row-text">
+                <div class="vp-control-title">Incident response plan documented</div>
+                <div class="vp-control-meta">Manual evidence · Singapore-localised template available</div>
+              </div>
+              <span class="vp-pill vp-pill-todo" id="vp-ctrl-ir-pill">To do</span>
+            </div>
+            <div class="vp-divider"></div>
+            <div class="vp-row">
+              <div style="font-size: 12px; color: var(--color-text-secondary);" id="vp-ctrl-ir-help">Use our 5-min template or upload your own.</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="vp-btn">Upload</button>
+                <button class="vp-btn vp-btn-primary" id="vp-ctrl-ir-btn" onclick="vpUseTemplate()">Use template</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="vp-card">
+            <div class="vp-row">
+              <div class="vp-row-text">
+                <div class="vp-control-title">Backup restore tested in last 12 months</div>
+                <div class="vp-control-meta">Manual evidence</div>
+              </div>
+              <span class="vp-pill vp-pill-todo">To do</span>
+            </div>
+          </div>
+
+          <p class="vp-section-head">Auto-verified</p>
+          <div class="vp-card">
+            <div class="vp-row">
+              <div class="vp-row-text">
+                <div class="vp-control-title">Multi-factor authentication on all admin accounts</div>
+                <div class="vp-control-meta">Auto-verified via Microsoft 365 · 14 hours ago</div>
+              </div>
+              <span class="vp-pill vp-pill-done">Verified</span>
+            </div>
+            <div class="vp-divider"></div>
+            <div style="font-size: 12px; color: var(--color-text-secondary);">3 of 3 admin accounts have MFA enabled.</div>
+          </div>
+
+          <div class="vp-card">
+            <div class="vp-row">
+              <div class="vp-row-text">
+                <div class="vp-control-title">Conditional access policy enforces MFA for all users</div>
+                <div class="vp-control-meta">Auto-verified via Microsoft 365</div>
+              </div>
+              <span class="vp-pill vp-pill-fail">Gap detected</span>
+            </div>
+            <div class="vp-divider"></div>
+            <div style="font-size: 12px; color: var(--color-text-secondary);">2 standard users without MFA registered. We caught this for you.</div>
+          </div>
+
+          <div class="vp-card">
+            <div class="vp-row">
+              <div class="vp-row-text">
+                <div class="vp-control-title">Backup frequency at least weekly</div>
+                <div class="vp-control-meta">Auto-verified via Microsoft 365</div>
+              </div>
+              <span class="vp-pill vp-pill-done">Verified</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUDIT PACK -->
+        <div class="vp-panel" data-panel="audit" style="display: none;">
+          <p class="vp-h1">Audit pack</p>
+          <p class="vp-sub">A single PDF + indexed ZIP your certification body can navigate. Generated on demand.</p>
+
+          <div class="vp-story">
+            <div class="vp-story-icon">5</div>
+            <div class="vp-story-text"><strong>The payoff:</strong> Click "Generate audit pack." This is what gets your customer off your back.</div>
+          </div>
+
+          <div class="vp-pdf-preview" id="vp-pdf-wrap">
+            <div class="vp-pdf-page">
+              <p class="vp-pdf-h">Cyber Essentials Evidence Pack</p>
+              <p class="vp-pdf-sub">Acme Logistics Pte Ltd · UEN 201912345A · Generated <span id="vp-pdf-date">today</span></p>
+
+              <p class="vp-pdf-section">A. Scope and assets</p>
+              <div class="vp-pdf-row"><span>A.1 In-scope assets list</span><span class="vp-pdf-tag">Attached</span></div>
+              <div class="vp-pdf-row"><span>A.2 User inventory (M365 export)</span><span class="vp-pdf-tag">Attached</span></div>
+
+              <p class="vp-pdf-section">B. Access control</p>
+              <div class="vp-pdf-row"><span>B.1 MFA configuration export</span><span class="vp-pdf-tag">Attached</span></div>
+              <div class="vp-pdf-row"><span>B.2 Conditional access policies</span><span class="vp-pdf-tag">Attached</span></div>
+
+              <p class="vp-pdf-section">C. Backup and recovery</p>
+              <div class="vp-pdf-row"><span>C.1 Backup schedule policy</span><span class="vp-pdf-tag">Attached</span></div>
+              <div class="vp-pdf-row"><span>C.2 Restore test report</span><span class="vp-pdf-tag">Attached</span></div>
+
+              <p class="vp-pdf-section">D. Incident response</p>
+              <div class="vp-pdf-row"><span>D.1 IR plan (template)</span><span class="vp-pdf-tag">Attached</span></div>
+            </div>
+            <div class="vp-pdf-overlay" id="vp-pdf-overlay">
+              <div class="vp-spinner"></div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);" id="vp-pdf-msg">Compiling 32 pieces of evidence…</div>
+            </div>
+          </div>
+
+          <div class="vp-row">
+            <div style="font-size: 13px; color: var(--color-text-secondary);" id="vp-audit-status">15 of 47 controls still need evidence before this pack is complete.</div>
+            <div style="display: flex; gap: 8px;">
+              <button class="vp-btn">Preview PDF</button>
+              <button class="vp-btn vp-btn-primary" onclick="vpGenerate()" id="vp-gen-btn">Generate audit pack</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="vp-toast" id="vp-toast"></div>
       </div>
 
-      <div class="ce-section-head">Secure / protect — access — 6 of 9</div>
-      <div class="ce-card">
-        <div class="ce-row">
-          <div><div class="ce-control-title">Multi-factor authentication on all admin accounts</div><div class="ce-control-meta">SS 712 §5.2.3 · Auto-verified via Microsoft 365</div></div>
-          <span class="ce-pill ce-pill-done">Verified</span>
-        </div>
-        <div class="ce-divider"></div>
-        <div style="font-size: 12px; color: var(--color-text-secondary);">3 of 3 global admin accounts have MFA enabled. Last checked 14 hours ago.</div>
-      </div>
-      <div class="ce-card">
-        <div class="ce-row">
-          <div><div class="ce-control-title">Conditional access policy enforces MFA for all users</div><div class="ce-control-meta">SS 712 §5.2.4 · Auto-verified via Microsoft 365</div></div>
-          <span class="ce-pill ce-pill-fail">Gap detected</span>
-        </div>
-        <div class="ce-divider"></div>
-        <div style="font-size: 12px; color: var(--color-text-secondary);">2 standard users without MFA registered. <a href="#" onclick="return false">View users</a></div>
-      </div>
-      <div class="ce-card">
-        <div class="ce-row">
-          <div><div class="ce-control-title">Privileged access reviewed quarterly</div><div class="ce-control-meta">SS 712 §5.2.7 · Manual evidence</div></div>
-          <span class="ce-pill ce-pill-done">Verified</span>
+      <div class="vp-demo-bar">
+        <div class="vp-demo-status" id="vp-demo-status">Demo: Step 1 of 4 — Setup</div>
+        <div class="vp-demo-actions">
+          <button class="vp-demo-btn" onclick="vpRestart()">Restart demo</button>
+          <button class="vp-demo-btn" onclick="vpExitDemo()">Exit demo mode</button>
         </div>
       </div>
     </div>
 
-    <!-- INTEGRATIONS -->
-    <div class="ce-panel" data-panel="integrations" style="display: none;">
-      <p class="ce-h1">Integrations</p>
-      <p class="ce-sub">Connect read-only access to auto-verify controls. We never make changes — only collect evidence.</p>
-
-      <div class="ce-integration">
-        <div class="ce-int-icon ms">M365</div>
-        <div class="ce-int-info">
-          <div class="ce-int-name">Microsoft 365</div>
-          <div class="ce-int-status">Connected · Last sync 14 hours ago · 14 controls auto-verified</div>
-        </div>
-        <button class="ce-btn">Manage</button>
-      </div>
-      <div class="ce-integration">
-        <div class="ce-int-icon gw">GW</div>
-        <div class="ce-int-info">
-          <div class="ce-int-name">Google Workspace</div>
-          <div class="ce-int-status">Not connected · Connect to auto-verify 7 controls</div>
-        </div>
-        <button class="ce-btn ce-btn-primary">Connect</button>
-      </div>
-      <div class="ce-integration">
-        <div class="ce-int-icon aws">AWS</div>
-        <div class="ce-int-info">
-          <div class="ce-int-name">Amazon Web Services</div>
-          <div class="ce-int-status">Coming Q3 · Cloud security domain</div>
-        </div>
-        <button class="ce-btn" disabled style="opacity: 0.5;">Soon</button>
-      </div>
-
-      <div class="ce-section-head">What we read from Microsoft 365</div>
-      <div class="ce-evidence-list">
-        <div class="ce-evidence-item"><div class="ce-evidence-icon">U</div>User list and admin roles</div>
-        <div class="ce-evidence-item"><div class="ce-evidence-icon">M</div>MFA registration status</div>
-        <div class="ce-evidence-item"><div class="ce-evidence-icon">C</div>Conditional access policies</div>
-        <div class="ce-evidence-item"><div class="ce-evidence-icon">P</div>Password policy settings</div>
-        <div class="ce-evidence-item"><div class="ce-evidence-icon">A</div>Audit log retention</div>
-        <div class="ce-evidence-item"><div class="ce-evidence-icon">D</div>Defender / anti-phishing state</div>
-      </div>
-    </div>
-
-    <!-- AUDIT PACK -->
-    <div class="ce-panel" data-panel="audit" style="display: none;">
-      <p class="ce-h1">Audit pack</p>
-      <p class="ce-sub">A single PDF + indexed ZIP your certification body can navigate. Generated on demand.</p>
-
-      <div class="ce-pdf-preview">
-        <div class="ce-pdf-page">
-          <p class="ce-pdf-h">Cyber Essentials Evidence Pack</p>
-          <p class="ce-pdf-sub">Acme Logistics Pte Ltd · UEN 201912345A · Generated 24 Apr 2026</p>
-
-          <p class="ce-pdf-section">A. Scope and assets</p>
-          <div class="ce-pdf-row"><span>A.1 In-scope assets list</span><span class="ce-pdf-tag">Attached</span></div>
-          <div class="ce-pdf-row"><span>A.2 Network diagram</span><span class="ce-pdf-tag">Attached</span></div>
-          <div class="ce-pdf-row"><span>A.3 User inventory (M365)</span><span class="ce-pdf-tag">Attached</span></div>
-
-          <p class="ce-pdf-section">B. Access control</p>
-          <div class="ce-pdf-row"><span>B.1 MFA configuration export</span><span class="ce-pdf-tag">Attached</span></div>
-          <div class="ce-pdf-row"><span>B.2 Conditional access policies</span><span class="ce-pdf-tag">Attached</span></div>
-          <div class="ce-pdf-row"><span>B.3 Privileged access review log</span><span class="ce-pdf-tag">Attached</span></div>
-
-          <p class="ce-pdf-section">C. Backup and recovery</p>
-          <div class="ce-pdf-row"><span>C.1 Backup schedule policy</span><span class="ce-pdf-tag">Attached</span></div>
-          <div class="ce-pdf-row"><span>C.2 Restore test report (Mar 2026)</span><span class="ce-pdf-tag">Attached</span></div>
-        </div>
-      </div>
-
-      <div class="ce-row">
-        <div style="font-size: 13px; color: var(--color-text-secondary);">14 of 47 controls still need evidence before this pack is complete.</div>
-        <div style="display: flex; gap: 8px;">
-          <button class="ce-btn">Preview PDF</button>
-          <button class="ce-btn ce-btn-primary">Share with auditor</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ONBOARDING -->
-    <div class="ce-panel" data-panel="onboarding" style="display: none;">
-      <p class="ce-h1">Onboarding · Step 2 of 5</p>
-      <p class="ce-sub">A few questions to personalise your checklist. Takes about 4 minutes.</p>
-
-      <div class="ce-form-row">
-        <label class="ce-label">How many employees?</label>
-        <div class="ce-choice">Fewer than 10</div>
-        <div class="ce-choice selected">10 to 50</div>
-        <div class="ce-choice">51 to 200</div>
-        <div class="ce-choice">More than 200</div>
-      </div>
-
-      <div class="ce-form-row">
-        <label class="ce-label">Which best describes your IT setup?</label>
-        <div class="ce-choice">Microsoft 365 only</div>
-        <div class="ce-choice selected">Microsoft 365 + some Google services</div>
-        <div class="ce-choice">Google Workspace only</div>
-        <div class="ce-choice">Mostly on-premise / mixed</div>
-      </div>
-
-      <div class="ce-form-row">
-        <label class="ce-label">Why are you pursuing Cyber Essentials? (optional, helps us prioritise)</label>
-        <div class="ce-choice">A customer or tender requires it</div>
-        <div class="ce-choice selected">We&rsquo;re proactively improving security</div>
-        <div class="ce-choice">Required for a partnership / supply chain</div>
-      </div>
-
-      <div class="ce-row" style="margin-top: 24px;">
-        <button class="ce-btn">Back</button>
-        <button class="ce-btn ce-btn-primary">Continue</button>
-      </div>
-    </div>
   </div>
 </div>
 
 <script>
-  (function() {
-    const tabs = document.querySelectorAll('.ce-tab');
-    const panels = document.querySelectorAll('[data-panel]');
-    function switchTab(name) {
-      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-      panels.forEach(p => p.style.display = (p.dataset.panel === name ? 'block' : 'none'));
+(function() {
+  const tabs = document.querySelectorAll('.vp-tab');
+  const panels = document.querySelectorAll('[data-panel]');
+  let demoMode = false;
+  let currentStep = 0;
+  const stepLabels = ['Setup', 'Connect M365', 'See dashboard', 'Use template', 'Generate pack'];
+
+  function showTab(name) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    panels.forEach(p => p.style.display = (p.dataset.panel === name ? 'block' : 'none'));
+  }
+  window.vpSwitchTab = showTab;
+  tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+
+  // Choice toggles
+  document.querySelectorAll('[data-group]').forEach(group => {
+    group.querySelectorAll('.vp-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.vp-choice').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  });
+
+  function updateDemoStatus() {
+    const el = document.getElementById('vp-demo-status');
+    const ind = document.getElementById('vp-step-indicator');
+    const txt = document.getElementById('vp-step-text');
+    if (demoMode && currentStep < stepLabels.length) {
+      el.textContent = 'Demo: Step ' + (currentStep + 1) + ' of 5 — ' + stepLabels[currentStep];
+      ind.style.display = 'inline-flex';
+      txt.textContent = 'Step ' + (currentStep + 1) + ' of 5';
+    } else if (demoMode) {
+      el.textContent = 'Demo complete · Explore freely or restart';
+      ind.style.display = 'none';
+    } else {
+      el.textContent = 'Free explore mode';
+      ind.style.display = 'none';
     }
-    tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
-    window.ceSwitch = switchTab;
-  })();
+  }
+
+  function toast(msg, ms = 2200) {
+    const el = document.getElementById('vp-toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), ms);
+  }
+
+  // Start the demo
+  window.vpStartDemo = function() {
+    document.getElementById('vp-hero').style.display = 'none';
+    document.getElementById('vp-app').style.display = 'block';
+    demoMode = true;
+    currentStep = 0;
+    showTab('onboarding');
+    updateDemoStatus();
+  };
+
+  window.vpExitDemo = function() {
+    demoMode = false;
+    updateDemoStatus();
+  };
+
+  // Step 1 → 2: finished onboarding
+  window.vpFinishOnboarding = function() {
+    if (demoMode) currentStep = 1;
+    showTab('integrations');
+    updateDemoStatus();
+    toast('Setup saved. Now connect Microsoft 365.', 2400);
+  };
+
+  // Step 2: connect MS
+  let connected = false;
+  window.vpConnectMs = function() {
+    if (connected) return;
+    connected = true;
+    const intEl = document.getElementById('vp-int-ms');
+    const status = document.getElementById('vp-ms-status');
+    const btn = document.getElementById('vp-connect-ms');
+    intEl.classList.add('connecting');
+    status.textContent = 'Authenticating with Microsoft…';
+    btn.textContent = 'Connecting…';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      status.textContent = 'Reading user accounts and policies…';
+    }, 900);
+    setTimeout(() => {
+      status.textContent = 'Verifying 14 controls…';
+    }, 1700);
+    setTimeout(() => {
+      intEl.classList.remove('connecting');
+      intEl.classList.add('connected');
+      status.textContent = 'Connected · 14 controls auto-verified · Last sync just now';
+      btn.textContent = 'Manage';
+      btn.disabled = false;
+      btn.classList.remove('vp-btn-primary');
+      toast('14 controls verified. Check your dashboard →', 2800);
+      // populate dashboard now
+      populateDashboard();
+      if (demoMode) currentStep = 2;
+      updateDemoStatus();
+      // auto-switch to dashboard after a beat
+      setTimeout(() => showTab('dashboard'), 1800);
+    }, 2600);
+  };
+
+  function populateDashboard() {
+    // animate stats
+    animateNumber('vp-stat-overall', 0, 45, 1200, v => v + '%');
+    animateNumber('vp-stat-auto', 0, 14, 1200);
+    animateNumber('vp-stat-manual', 0, 7, 1200);
+    setTimeout(() => {
+      const d = document.getElementById('vp-stat-days');
+      d.textContent = '28';
+    }, 1300);
+
+    // show deltas
+    setTimeout(() => {
+      ['vp-stat-overall-delta', 'vp-stat-auto-delta', 'vp-stat-manual-delta', 'vp-stat-days-delta'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.classList.add('show');
+      });
+    }, 1400);
+
+    // domain bars
+    const domains = [
+      ['vp-dom-people', 50, 'vp-dom-people-meta', '3 of 6 done'],
+      ['vp-dom-hw', 38, 'vp-dom-hw-meta', '3 of 8 done'],
+      ['vp-dom-acc', 67, 'vp-dom-acc-meta', '6 of 9 done'],
+      ['vp-dom-upd', 43, 'vp-dom-upd-meta', '3 of 7 done'],
+      ['vp-dom-mal', 50, 'vp-dom-mal-meta', '3 of 6 done'],
+      ['vp-dom-bk', 27, 'vp-dom-bk-meta', '3 of 11 done']
+    ];
+    domains.forEach(([bar, pct, metaId, metaText], i) => {
+      setTimeout(() => {
+        const el = document.getElementById(bar);
+        if (el) el.style.width = pct + '%';
+        const m = document.getElementById(metaId);
+        if (m) m.textContent = metaText;
+      }, 200 + i * 120);
+    });
+  }
+
+  function animateNumber(id, from, to, duration, format) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const val = Math.round(from + (to - from) * t);
+      el.textContent = format ? format(val) : val;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Step 4: use template
+  let templateUsed = false;
+  window.vpUseTemplate = function() {
+    if (templateUsed) return;
+    templateUsed = true;
+    const card = document.getElementById('vp-ctrl-ir');
+    const pill = document.getElementById('vp-ctrl-ir-pill');
+    const btn = document.getElementById('vp-ctrl-ir-btn');
+    const help = document.getElementById('vp-ctrl-ir-help');
+
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+
+    setTimeout(() => {
+      card.classList.add('flash');
+      pill.textContent = 'Done';
+      pill.classList.remove('vp-pill-todo');
+      pill.classList.add('vp-pill-done');
+      btn.textContent = 'Done';
+      help.textContent = 'Template saved as Incident_Response_Acme.pdf — 4 controls unlocked.';
+      // bump dashboard
+      animateNumber('vp-stat-overall', 45, 53, 800, v => v + '%');
+      animateNumber('vp-stat-manual', 7, 11, 800);
+      const d = document.getElementById('vp-stat-days');
+      if (d) d.textContent = '21';
+      toast('+4 controls. Now 53% ready.', 2400);
+      if (demoMode) currentStep = 3;
+      updateDemoStatus();
+    }, 1200);
+  };
+
+  // Step 5: generate audit pack
+  let generated = false;
+  window.vpGenerate = function() {
+    if (generated) return;
+    generated = true;
+    const overlay = document.getElementById('vp-pdf-overlay');
+    const msg = document.getElementById('vp-pdf-msg');
+    const btn = document.getElementById('vp-gen-btn');
+    const status = document.getElementById('vp-audit-status');
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+    overlay.classList.add('active');
+
+    const stages = [
+      'Compiling 32 pieces of evidence…',
+      'Cross-referencing SS 712 clauses…',
+      'Generating PDF and indexed ZIP…',
+      'Almost done…'
+    ];
+    stages.forEach((s, i) => setTimeout(() => { msg.textContent = s; }, 700 * (i + 1)));
+
+    setTimeout(() => {
+      overlay.classList.remove('active');
+      btn.textContent = 'Download pack';
+      btn.disabled = false;
+      status.textContent = 'Pack generated. Share-link sent to your auditor inbox.';
+      toast('Audit pack ready. Send it to your certifying body.', 3000);
+      if (demoMode) currentStep = 4;
+      updateDemoStatus();
+    }, 3200);
+  };
+
+  window.vpRestart = function() {
+    // reset everything
+    connected = false;
+    templateUsed = false;
+    generated = false;
+    currentStep = 0;
+    demoMode = true;
+
+    // reset MS card
+    const intEl = document.getElementById('vp-int-ms');
+    intEl.classList.remove('connected', 'connecting');
+    document.getElementById('vp-ms-status').textContent = 'Not connected · Auto-verifies up to 14 controls';
+    const cb = document.getElementById('vp-connect-ms');
+    cb.textContent = 'Connect';
+    cb.disabled = false;
+    cb.classList.add('vp-btn-primary');
+
+    // reset stats
+    document.getElementById('vp-stat-overall').textContent = '0%';
+    document.getElementById('vp-stat-auto').textContent = '0';
+    document.getElementById('vp-stat-manual').textContent = '0';
+    document.getElementById('vp-stat-days').textContent = '—';
+    ['vp-stat-overall-delta', 'vp-stat-auto-delta', 'vp-stat-manual-delta', 'vp-stat-days-delta'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.classList.remove('show');
+    });
+
+    // reset bars
+    ['vp-dom-people', 'vp-dom-hw', 'vp-dom-acc', 'vp-dom-upd', 'vp-dom-mal', 'vp-dom-bk'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.width = '0%';
+    });
+    [['vp-dom-people-meta', '0 of 6 done'], ['vp-dom-hw-meta', '0 of 8 done'], ['vp-dom-acc-meta', '0 of 9 done'],
+     ['vp-dom-upd-meta', '0 of 7 done'], ['vp-dom-mal-meta', '0 of 6 done'], ['vp-dom-bk-meta', '0 of 11 done']].forEach(([id, t]) => {
+      const el = document.getElementById(id); if (el) el.textContent = t;
+    });
+
+    // reset IR control
+    const card = document.getElementById('vp-ctrl-ir');
+    if (card) card.classList.remove('flash');
+    const pill = document.getElementById('vp-ctrl-ir-pill');
+    if (pill) { pill.textContent = 'To do'; pill.classList.remove('vp-pill-done'); pill.classList.add('vp-pill-todo'); }
+    const irBtn = document.getElementById('vp-ctrl-ir-btn');
+    if (irBtn) { irBtn.textContent = 'Use template'; irBtn.disabled = false; }
+    const help = document.getElementById('vp-ctrl-ir-help');
+    if (help) help.textContent = 'Use our 5-min template or upload your own.';
+
+    // reset audit
+    const genBtn = document.getElementById('vp-gen-btn');
+    if (genBtn) { genBtn.textContent = 'Generate audit pack'; genBtn.disabled = false; }
+    const status = document.getElementById('vp-audit-status');
+    if (status) status.textContent = '15 of 47 controls still need evidence before this pack is complete.';
+
+    showTab('onboarding');
+    updateDemoStatus();
+  };
+
+  // Set today's date in audit pack
+  const dateEl = document.getElementById('vp-pdf-date');
+  if (dateEl) {
+    const d = new Date();
+    dateEl.textContent = d.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+})();
 </script>
